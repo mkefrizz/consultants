@@ -12,4 +12,4 @@ oppexp_head <- read.csv("oppexp_header_file (1).csv")
 names(oppexp) <- names(oppexp_head) %>% tolower()
 names(oppexp)[26] <- "none"
 
-polling <- oppexp %>% filter(grepl('Polling', purpose))
+polling <- oppexp %>% filter(grepl('poll|Poll|POLL', purpose))
