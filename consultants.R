@@ -56,8 +56,16 @@ fips_cd <- sqldf("select fips_cd_temp.census_id, fips_states_temp.state_fips, fi
                  left join fips_cd_temp 
                  on fips_states_temp.state_fips = leftstr(fips_cd_temp.census_id,2)"
                  )
+fips_cd <- sqldf("select fips_cd.*, case when fips_cd.cd = '00' THEN '01' ELSE fips_cd.cd END as cd_fix from fips_cd")
 
+# Add Census ID to DW House Scores
+house_dw$district_code <- str_pad(house_dw$district_code, 2, pad="0")
+house_dw <- sqldf("select house_dw.*, fips_cd.census_id from house_dw left join fips_cd on fips_cd.state = house_dw.state_abbrev and fips_cd.cd_fix = house_dw.district_code")
 
+# Add Census ID to House Election Results
+house <- sqldf("select house.*, rightstr(house.district, 2) as cd from house")
+house <- sqldf("select house.*, case when house.cd='AL' THEN '01' ELSE house.cd END as cd_fix from house")
+house <- sqldf("select house.*, fips_cd.census_id from house left join fips_cd on house.cd_fix = fips_cd.cd_fix and house.state_abb = fips_cd.state")
 
 
 remove(fips_cd_temp)
