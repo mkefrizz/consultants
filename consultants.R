@@ -101,3 +101,8 @@ pred_data$female <- as.numeric(pred_data$female)
 
 #Modeled 2018 House Results
 model <- lm(h18dem ~ h10dem + p16dem + p12dem + nominate_dim1 + nominate_dim2 + afam + female + over65, data=pred_data)
+
+pred_data$predict <- predict(model, newdata = pred_data)
+pred_data$resid <- pred_data$predict - pred_data$h18dem
+
+
