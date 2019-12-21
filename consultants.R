@@ -19,16 +19,26 @@ names(oppexp) <- names(oppexp_head) %>% tolower()
 names(oppexp)[26] <- "none"
 
 # Subset for polling only
-polling <- oppexp %>% filter(grepl('poll|Poll|POLL', purpose))
+polling <- oppexp %>% filter(grepl('005', category))
 
 # Load FEC Candidate lookup
-cand <- read.table(file="cn.txt", header=FALSE, sep="|", fill=TRUE)
-cand_head <- read.csv(file="cn_header_file.csv")
+
+temp <- tempfile()
+download.file("https://www.fec.gov/files/bulk-downloads/2018/cn18.zip",temp)
+cand <- read.table(unz(temp, "cn.txt"), header=FALSE, sep="|", fill=TRUE)
+unlink(temp)
+remove(temp)
+cand_head <- read.csv("https://www.fec.gov/files/bulk-downloads/data_dictionaries/cn_header_file.csv")
 names(cand) <- names(cand_head) %>% tolower()
 
 # Load FEC committee lookup
-committee <- read.table(file="cm.txt", header=FALSE, sep="|", fill=TRUE)
-comm_head <- read.csv(file="cm_header_file.csv")
+
+temp <- tempfile()
+download.file("https://www.fec.gov/files/bulk-downloads/2018/ccl18.zip",temp)
+committee <- read.table(unz(temp, "ccl.txt"), header=FALSE, sep="|", fill=TRUE)
+unlink(temp)
+remove(temp)
+comm_head <- read.csv("https://www.fec.gov/files/bulk-downloads/data_dictionaries/ccl_header_file.csv")
 names(committee) <- names(comm_head) %>% tolower()
 
 # Load census data
